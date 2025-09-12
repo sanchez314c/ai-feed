@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- Required for Electron JavaScript execution -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    
+    <!-- Required for native modules and memory allocation -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    
+    <!-- Network client access for API calls and updates -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    
+    <!-- Allow outgoing network connections -->
+    <key>com.apple.security.network.server</key>
+    <true/>
+    
+    <!-- File system access for local data storage -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    
+    <!-- Application data directory access -->
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
+    
+    <!-- Audio/video capture for potential future features -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    
+    <!-- Camera access for potential future features -->
+    <key>com.apple.security.device.camera</key>
+    <true/>
+    
+    <!-- Required for some Electron functionality -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+    
+    <!-- Allow dylib loading -->
+    <key>com.apple.security.cs.disable-executable-page-protection</key>
+    <true/>
+    
+    <!-- Required for auto-updater -->
+    <key>com.apple.security.automation.apple-events</key>
+    <true/>
+  </dict>
+</plist>

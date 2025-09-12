@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+venv/
+.env
+.env.local
+.env.production
+*.pyc
+__pycache__/
+
+# Build outputs
+dist/
+build/
+out/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Testing
+coverage/
+.coverage
+.pytest_cache/
+*.lcov
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Electron
+*.lock
+package-lock.json
+
+# Debug
+*.stackdump
+
+# Cache
+.cache/
+node_modules/.cache/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
