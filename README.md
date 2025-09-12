@@ -1,39 +1,10 @@
-####################################################################################
-#                                                                                  #
-#   ██████╗ ███████╗████████╗    ███████╗██╗    ██╗██╗███████╗████████╗██╗   ██╗    #
-#  ██╔════╝ ██╔════╝╚══██╔══╝    ██╔════╝██║    ██║██║██╔════╝╚══██╔══╝╚██╗ ██╔╝    #
-#  ██║  ███╗█████╗     ██║       ███████╗██║ █╗ ██║██║█████╗     ██║     ╚████╔╝     #
-#  ██║   ██║██╔══╝     ██║       ╚════██║██║███╗██║██║██╔══╝     ██║      ╚██╔╝      #
-#  ╚██████╔╝███████╗   ██║       ███████║╚███╔███╔╝██║██╗         ██║       ██║       #
-#   ╚═════╝ ╚══════╝   ╚═╝       ╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝         ╚═╝       ╚═╝       #
-#                                                                                  #
-####################################################################################
-#
-# Project Name: theFEED (AIFEED Platform)
-#
-# Author: @spacewelder314
-#
-# Date Created: 2024-05-01
-#
-# Last Modified: 2025-09-01
-#
-# Version: 1.0.0
-#
-# Description: AI Intelligence Dashboard - Aggregates and analyzes AI content from multiple sources
-#
-# Language/Framework: Electron + TypeScript + Vite + React
-#
-# Usage: npm run dev (development) or npm start (production)
-#
-# Dependencies: Electron, TypeScript, Vite, React (see package.json)
-#
-# GitHub: https://github.com/spacewelder314/theFEED
-#
-# Notes: Cross-platform desktop app for AI content aggregation with Claude integration
-#
-####################################################################################
+# AIFeed - AI Intelligence Dashboard
 
-# AIFEED - AI Intelligence Dashboard
+> A comprehensive AI content aggregation platform built with Electron, TypeScript, and React
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
 ## Quick Start
 
