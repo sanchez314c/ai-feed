@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# AIFEED Build Bloat Analysis Script
-# Analyzes Electron build outputs for size optimization opportunities
-# Can be run independently or integrated into build workflows
+# Bloat Analysis Script for AIFEED
+# Analyzes project dependencies and provides optimization recommendations
+
+set -e
 
 # Color codes for output
 RED='\033[0;31m'
@@ -13,10 +14,9 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Get script directory and project root
+# Get the script directory
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-DIST_DIR="${PROJECT_DIR}/dist"
+cd "$SCRIPT_DIR/.."
 
 # Function to print colored output
 print_status() {
@@ -39,333 +39,173 @@ print_info() {
     echo -e "${CYAN}[$(date +'%H:%M:%S')] ℹ${NC} $1"
 }
 
-# Function to display help
-show_help() {
-    echo "AIFEED Build Bloat Analysis Tool"
+print_header() {
     echo ""
-    echo "Usage: ./scripts/bloat-check.sh [options]"
+    echo -e "${PURPLE}════════════════════════════════════════════════════════════════════════════════${NC}"
+    echo -e "${PURPLE} $1${NC}"
+    echo -e "${PURPLE}════════════════════════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo "Options:"
-    echo "  --dir PATH         Specify build directory (default: ./dist)"
-    echo "  --detailed         Show detailed file analysis"
-    echo "  --recommendations  Show optimization recommendations"
-    echo "  --json            Output results in JSON format"
-    echo "  --help            Display this help message"
-    echo ""
-    echo "Examples:"
-    echo "  ./scripts/bloat-check.sh                     # Quick analysis"
-    echo "  ./scripts/bloat-check.sh --detailed          # Detailed analysis"
-    echo "  ./scripts/bloat-check.sh --dir ./build       # Custom directory"
-    echo "  ./scripts/bloat-check.sh --json              # JSON output"
 }
 
-# Parse command line arguments
-BUILD_DIR="$DIST_DIR"
-DETAILED=false
-RECOMMENDATIONS=false
-JSON_OUTPUT=false
-
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --dir)
-            BUILD_DIR="$2"
-            shift 2
-            ;;
-        --detailed)
-            DETAILED=true
-            shift
-            ;;
-        --recommendations)
-            RECOMMENDATIONS=true
-            shift
-            ;;
-        --json)
-            JSON_OUTPUT=true
-            shift
-            ;;
-        --help)
-            show_help
-            exit 0
-            ;;
-        *)
-            print_error "Unknown option: $1"
-            show_help
-            exit 1
-            ;;
-    esac
-done
-
-# Main bloat analysis function
-analyze_build_bloat() {
-    print_status "📊 Analyzing build bloat in: $BUILD_DIR"
-    
-    if [ ! -d "$BUILD_DIR" ]; then
-        print_error "Build directory not found: $BUILD_DIR"
-        print_info "Run the build process first or specify correct directory with --dir"
-        exit 1
-    fi
-    
-    # Basic size analysis
-    local total_size=$(du -sh "$BUILD_DIR" 2>/dev/null | cut -f1)
-    local total_bytes=$(du -s "$BUILD_DIR" 2>/dev/null | cut -f1)
-    local file_count=$(find "$BUILD_DIR" -type f | wc -l | tr -d ' ')
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "{"
-        echo "  \"analysis_time\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\","
-        echo "  \"build_directory\": \"$BUILD_DIR\","
-        echo "  \"total_size\": \"$total_size\","
-        echo "  \"total_bytes\": $total_bytes,"
-        echo "  \"file_count\": $file_count,"
+# Function to convert bytes to human readable
+human_readable() {
+    local bytes=$1
+    if [ -z "$bytes" ] || [ "$bytes" = "0" ]; then
+        echo "0B"
+    elif [ $bytes -gt 1073741824 ]; then
+        echo "$(($bytes / 1073741824)).$((($bytes % 1073741824) * 100 / 1073741824))GB"
+    elif [ $bytes -gt 1048576 ]; then
+        echo "$(($bytes / 1048576)).$((($bytes % 1048576) * 100 / 1048576))MB"
+    elif [ $bytes -gt 1024 ]; then
+        echo "$(($bytes / 1024))KB"
     else
-        echo ""
-        echo -e "${PURPLE}════════════════════════════════════════════════════════${NC}"
-        print_info "📈 Build Size Analysis Results"
-        echo "   Build Directory: $BUILD_DIR"
-        echo "   Total Size: $total_size"
-        echo "   Total Files: $file_count files"
-        echo ""
-    fi
-    
-    # Analyze by file types
-    analyze_file_types
-    
-    # Platform-specific analysis
-    analyze_platforms
-    
-    # Check for common bloat patterns
-    check_bloat_patterns
-    
-    # Show largest files
-    if [ "$DETAILED" = true ]; then
-        show_largest_files
-    fi
-    
-    # Show optimization recommendations
-    if [ "$RECOMMENDATIONS" = true ]; then
-        show_recommendations
-    fi
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "}"
-    else
-        echo ""
-        echo -e "${PURPLE}════════════════════════════════════════════════════════${NC}"
-        print_success "Bloat analysis completed"
+        echo "${bytes}B"
     fi
 }
 
-analyze_file_types() {
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "  \"file_types\": {"
-    else
-        print_info "📁 File Type Breakdown:"
-    fi
-    
-    # Analyze common file types
-    local types=("js" "html" "css" "png" "jpg" "jpeg" "gif" "svg" "woff" "woff2" "ttf" "json" "xml")
-    local first=true
-    
-    for ext in "${types[@]}"; do
-        local count=$(find "$BUILD_DIR" -name "*.${ext}" -type f | wc -l | tr -d ' ')
-        local size=$(find "$BUILD_DIR" -name "*.${ext}" -type f -exec ls -l {} + 2>/dev/null | \
-            awk '{sum += $5} END {if(sum) print sum/1024/1024; else print 0}')
-        
-        if [ "$count" -gt 0 ]; then
-            if [ "$JSON_OUTPUT" = true ]; then
-                [ "$first" = false ] && echo ","
-                printf "    \"%s\": {\"count\": %d, \"size_mb\": %.2f}" "$ext" "$count" "$size"
-                first=false
-            else
-                printf "   %-8s: %3d files, %.2f MB\n" "$ext" "$count" "$size"
-            fi
-        fi
-    done
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo ""
-        echo "  },"
-    else
-        echo ""
-    fi
-}
+# Main bloat analysis
+print_header "🔍 AIFEED BLOAT ANALYSIS"
 
-analyze_platforms() {
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "  \"platforms\": {"
-    else
-        print_info "🖥️ Platform Distribution:"
-    fi
-    
-    local platforms=("mac" "win" "linux" "darwin" "win32")
-    local first=true
-    
-    for platform in "${platforms[@]}"; do
-        local platform_files=$(find "$BUILD_DIR" -name "*${platform}*" -type f 2>/dev/null | wc -l | tr -d ' ')
-        local platform_dirs=$(find "$BUILD_DIR" -name "*${platform}*" -type d 2>/dev/null | wc -l | tr -d ' ')
-        
-        if [ $platform_files -gt 0 ] || [ $platform_dirs -gt 0 ]; then
-            local platform_size=$(find "$BUILD_DIR" -name "*${platform}*" -exec ls -l {} + 2>/dev/null | \
-                awk '{sum += $5} END {if(sum) print sum/1024/1024; else print 0}')
-            
-            if [ "$JSON_OUTPUT" = true ]; then
-                [ "$first" = false ] && echo ","
-                printf "    \"%s\": {\"files\": %d, \"directories\": %d, \"size_mb\": %.2f}" \
-                    "$platform" "$platform_files" "$platform_dirs" "$platform_size"
-                first=false
-            else
-                printf "   %-8s: %3d files, %2d dirs, %.2f MB\n" \
-                    "$platform" "$platform_files" "$platform_dirs" "$platform_size"
-            fi
-        fi
-    done
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo ""
-        echo "  },"
-    else
-        echo ""
-    fi
-}
+# Check if in Node.js project
+if [ ! -f "package.json" ]; then
+    print_error "No package.json found. This is not a Node.js project."
+    exit 1
+fi
 
-check_bloat_patterns() {
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "  \"bloat_patterns\": {"
-    else
-        print_info "🔍 Bloat Pattern Detection:"
-    fi
-    
-    # Check for source maps
-    local js_maps=$(find "$BUILD_DIR" -name "*.js.map" -type f | wc -l | tr -d ' ')
-    local css_maps=$(find "$BUILD_DIR" -name "*.css.map" -type f | wc -l | tr -d ' ')
-    
-    # Check for test files
-    local test_files=$(find "$BUILD_DIR" -name "*test*" -o -name "*spec*" -type f | wc -l | tr -d ' ')
-    
-    # Check for documentation files
-    local docs=$(find "$BUILD_DIR" -name "*.md" -o -name "*.txt" -o -name "README*" -type f | wc -l | tr -d ' ')
-    
-    # Check for temporary files
-    local temp_files=$(find "$BUILD_DIR" -name "*.tmp" -o -name "*.temp" -o -name ".DS_Store" -type f | wc -l | tr -d ' ')
-    
-    # Check for duplicate files (by size)
-    local duplicates=$(find "$BUILD_DIR" -type f -exec ls -l {} + | \
-        awk '{print $5}' | sort -n | uniq -d | wc -l | tr -d ' ')
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "    \"source_maps\": {\"js\": $js_maps, \"css\": $css_maps},"
-        echo "    \"test_files\": $test_files,"
-        echo "    \"documentation\": $docs,"
-        echo "    \"temp_files\": $temp_files,"
-        echo "    \"potential_duplicates\": $duplicates"
-        echo "  },"
-    else
-        [ $js_maps -gt 0 ] && print_warning "Found $js_maps JavaScript source map files"
-        [ $css_maps -gt 0 ] && print_warning "Found $css_maps CSS source map files"
-        [ $test_files -gt 0 ] && print_warning "Found $test_files test files in build"
-        [ $docs -gt 10 ] && print_warning "Found $docs documentation files (consider reducing)"
-        [ $temp_files -gt 0 ] && print_warning "Found $temp_files temporary files"
-        [ $duplicates -gt 0 ] && print_info "Found $duplicates potential duplicate file sizes"
-        echo ""
-    fi
-}
+PROJECT_NAME=$(grep '"name"' package.json | cut -d'"' -f4)
+print_status "Analyzing project: $PROJECT_NAME"
 
-show_largest_files() {
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "  \"largest_files\": ["
+# 1. Node modules analysis
+print_status "📦 Analyzing node_modules..."
+
+if [ -d "node_modules" ]; then
+    NODE_SIZE=$(du -sb node_modules 2>/dev/null | cut -f1)
+    NODE_SIZE=${NODE_SIZE:-0}
+    NODE_SIZE_HR=$(human_readable $NODE_SIZE)
+    print_info "Total node_modules size: $NODE_SIZE_HR"
+
+    # Size categories
+    if [ $NODE_SIZE -gt 1073741824 ]; then
+        print_warning "⚠️  LARGE: Node modules > 1GB - optimization recommended"
+    elif [ $NODE_SIZE -gt 536870912 ]; then
+        print_warning "⚠️  MEDIUM: Node modules > 500MB - consider cleanup"
     else
-        print_info "📋 Largest Files (Top 15):"
+        print_success "✓ Node modules size acceptable"
     fi
-    
-    local count=0
-    find "$BUILD_DIR" -type f -exec ls -lh {} + 2>/dev/null | \
-        sort -k5 -hr | head -15 | while read -r line; do
-        local size=$(echo "$line" | awk '{print $5}')
-        local file=$(echo "$line" | awk '{print $9}')
-        local relative_file=${file#$BUILD_DIR/}
-        
-        if [ "$JSON_OUTPUT" = true ]; then
-            [ $count -gt 0 ] && echo ","
-            printf "    {\"file\": \"%s\", \"size\": \"%s\"}" "$relative_file" "$size"
+
+    print_info "Top 10 largest dependencies:"
+    du -sh node_modules/* 2>/dev/null | sort -hr | head -10 | while read size dir; do
+        basename_dir=$(basename "$dir")
+        if [ ${#size} -gt 4 ] || [[ $size == *"M"* ]] || [[ $size == *"G"* ]]; then
+            print_warning "  $size - $basename_dir"
         else
-            printf "   %-60s %8s\n" "$relative_file" "$size"
+            print_info "  $size - $basename_dir"
         fi
-        ((count++))
     done
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo ""
-        echo "  ],"
-    else
-        echo ""
-    fi
-}
+else
+    print_warning "⚠️  node_modules directory not found"
+fi
 
-show_recommendations() {
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo "  \"recommendations\": ["
+# 2. Dependencies analysis
+print_status "📋 Analyzing dependencies..."
+
+if command -v npm >/dev/null 2>&1; then
+    PROD_DEPS=$(npm ls --production --depth=0 2>/dev/null | grep -c "├─\\|└─" || echo "0")
+    DEV_DEPS=$(npm ls --development --depth=0 2>/dev/null | grep -c "├─\\|└─" || echo "0")
+
+    print_info "Production dependencies: $PROD_DEPS"
+    print_info "Development dependencies: $DEV_DEPS"
+
+    # Check for duplicates
+    DUPES=$(npm dedupe --dry-run 2>/dev/null | grep -c "removed" || echo "0")
+    DUPES=${DUPES:-0}
+    if [ "$DUPES" -gt 0 ]; then
+        print_warning "⚠️  Found $DUPES duplicate packages - run 'npm dedupe'"
     else
-        print_info "💡 Optimization Recommendations:"
+        print_success "✓ No duplicate packages found"
     fi
-    
-    local recommendations=()
-    
-    # Check for source maps
-    if [ $(find "$BUILD_DIR" -name "*.map" -type f | wc -l | tr -d ' ') -gt 0 ]; then
-        recommendations+=("Remove source maps for production builds")
-    fi
-    
-    # Check for test files
-    if [ $(find "$BUILD_DIR" -name "*test*" -o -name "*spec*" -type f | wc -l | tr -d ' ') -gt 0 ]; then
-        recommendations+=("Exclude test files from production builds")
-    fi
-    
-    # Check for documentation
-    if [ $(find "$BUILD_DIR" -name "*.md" -type f | wc -l | tr -d ' ') -gt 10 ]; then
-        recommendations+=("Reduce documentation files in build output")
-    fi
-    
-    # Check build size
-    local size_kb=$(du -s "$BUILD_DIR" 2>/dev/null | cut -f1)
-    if [ "$size_kb" -gt 1048576 ]; then  # > 1GB
-        recommendations+=("Consider code splitting - build size exceeds 1GB")
-    fi
-    
-    # Check for unoptimized images
-    local large_images=$(find "$BUILD_DIR" -name "*.png" -o -name "*.jpg" -type f -size +1M | wc -l | tr -d ' ')
-    if [ "$large_images" -gt 0 ]; then
-        recommendations+=("Optimize $large_images large image files (>1MB)")
-    fi
-    
-    # Output recommendations
-    if [ ${#recommendations[@]} -eq 0 ]; then
-        if [ "$JSON_OUTPUT" = true ]; then
-            echo "    \"No major optimization opportunities found\""
+
+    # Check for unused dependencies
+    if command -v npx >/dev/null 2>&1; then
+        UNUSED=$(npx depcheck --json 2>/dev/null | grep -o '"dependencies":\\[[^]]*\\]' | grep -o '"[^\"]*"' | wc -l || echo "0")
+        UNUSED=${UNUSED:-0}
+        if [ "$UNUSED" -gt 0 ]; then
+            print_warning "⚠️  Found ~$UNUSED potentially unused dependencies"
         else
-            print_success "✨ No major optimization opportunities found!"
+            print_success "✓ No obviously unused dependencies"
         fi
-    else
-        local first=true
-        for rec in "${recommendations[@]}"; do
-            if [ "$JSON_OUTPUT" = true ]; then
-                [ "$first" = false ] && echo ","
-                printf "    \"%s\"" "$rec"
-                first=false
-            else
-                echo "   • $rec"
-            fi
-        done
     fi
-    
-    if [ "$JSON_OUTPUT" = true ]; then
-        echo ""
-        echo "  ]"
-    else
-        echo ""
-    fi
-}
+fi
 
-# Main execution
-echo "🔍 AIFEED Build Bloat Analyzer"
-echo "==============================="
-analyze_build_bloat
+# 3. Build configuration analysis
+print_status "⚙️  Analyzing build configuration..."
+
+if grep -q '"build":' package.json; then
+    if grep -q '"node_modules/\\*\\*/\\*"' package.json; then
+        print_error "❌ CRITICAL: Including 'node_modules/**/*' in build files!"
+    fi
+    if grep -q '"dist/\\*\\*/\\*"' package.json; then
+        print_warning "⚠️  Including 'dist/**/*' may include unwanted files"
+    fi
+    if ! grep -q '"\\!\\*\\*\\/\\*.map"' package.json; then
+        print_warning "⚠️  Not excluding source maps (*.map files)"
+    fi
+fi
+
+# 4. AIFEED-specific checks
+print_status "🤖 AIFEED-specific analysis..."
+
+# Check for AI SDK dependencies
+if grep -q "@anthropic-ai/sdk" package.json; then
+    print_success "✓ Anthropic SDK found"
+else
+    print_warning "⚠️  Anthropic SDK not found in dependencies"
+fi
+
+# Check for database dependencies
+if grep -q "sqlite3" package.json; then
+    print_success "✓ SQLite database dependency found"
+else
+    print_warning "⚠️  SQLite not found in dependencies"
+fi
+
+# Check for Electron dependencies
+if grep -q "electron" package.json; then
+    print_success "✓ Electron dependency found"
+else
+    print_error "❌ Electron not found in dependencies"
+fi
+
+# 5. Build output analysis
+print_status "📊 Build output analysis..."
+
+if [ -d "dist" ]; then
+    DIST_SIZE=$(du -sb dist 2>/dev/null | cut -f1)
+    DIST_SIZE=${DIST_SIZE:-0}
+    DIST_SIZE_HR=$(human_readable $DIST_SIZE)
+    print_info "Build output size: $DIST_SIZE_HR"
+
+    # Count distribution packages
+    PACKAGE_COUNT=$(find dist -name "*.dmg" -o -name "*.pkg" -o -name "*.exe" -o -name "*.msi" -o -name "*.zip" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.snap" -o -name "*.tar.*" 2>/dev/null | wc -l)
+    print_info "Distribution packages: $PACKAGE_COUNT"
+else
+    print_info "No build output found (run 'npm run dist' to create build artifacts)"
+fi
+
+# 6. Recommendations
+print_header "💡 OPTIMIZATION RECOMMENDATIONS"
+
+print_info "General recommendations:"
+print_info "  • Run 'npm dedupe' to remove duplicate packages"
+print_info "  • Run 'npx depcheck' to find unused dependencies"
+print_info "  • Review build configuration in package.json"
+print_info "  • Consider compression settings for smaller packages"
+
+print_info "AIFEED-specific recommendations:"
+print_info "  • Regularly clean AI content cache to manage disk space"
+print_info "  • Monitor SQLite database size and implement cleanup routines"
+print_info "  • Review AI API usage patterns for optimization opportunities"
+print_info "  • Consider implementing data retention policies"
+
+print_header "✅ BLOAT ANALYSIS COMPLETE"
+print_success "Analysis completed. Review recommendations above for optimization opportunities."

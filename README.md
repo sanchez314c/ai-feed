@@ -1,10 +1,13 @@
-# AIFeed - AI Intelligence Dashboard
+# 🤖 AIFEED - AI Intelligence Dashboard
 
-> A comprehensive AI content aggregation platform built with Electron, TypeScript, and React
+> 🚀 **A comprehensive AI content aggregation platform** that brings together the latest AI research, news, and insights from across the web in one intelligent dashboard.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
+![Electron](https://img.shields.io/badge/Electron-28.0.0-9FEAF9.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3.2-3178C6.svg)
+![React](https://img.shields.io/badge/React-18.2.0-61DAFB.svg)
 
 ## Quick Start
 

@@ -36,10 +36,13 @@
     "dist:linux:deb": "npm run build && electron-builder --linux --config.linux.target=deb",
     "dist:linux:rpm": "npm run build && electron-builder --linux --config.linux.target=rpm",
     "dist:linux:snap": "npm run build && electron-builder --linux --config.linux.target=snap",
+    "dist:maximum": "npm run build && electron-builder --mac --win --linux --x64 --arm64 && electron-builder --win --ia32 && electron-builder --linux --ia32 && electron-builder --linux --armv7l",
+    "pack": "npm run build && electron-builder --dir",
     "clean": "rm -rf dist build node_modules/.cache",
     "clean:full": "rm -rf dist build node_modules",
     "bloat-check": "./scripts/bloat-check.sh",
     "temp-cleanup": "./scripts/temp-cleanup.sh",
+    "build-clean": "./scripts/build-compile-dist.sh --skip-temp-clean --skip-bloat",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -134,7 +137,7 @@
     "copyright": "Copyright © 2024 AIFEED Team",
     "directories": {
       "output": "dist",
-      "buildResources": "resources"
+      "buildResources": "build-resources"
     },
     "files": [
       "build/**/*",
@@ -147,7 +150,7 @@
     ],
     "mac": {
       "category": "public.app-category.productivity",
-      "icon": "resources/icon.icns",
+      "icon": "build-resources/icons/icon.icns",
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "forceCodeSigning": false,
@@ -184,7 +187,7 @@
       ]
     },
     "win": {
-      "icon": "resources/icon.ico",
+      "icon": "build-resources/icons/icon.ico",
       "target": [
         {
           "target": "nsis",
@@ -211,9 +214,9 @@
     },
     "nsis": {
       "oneClick": false,
-      "installerIcon": "resources/icon.ico",
-      "uninstallerIcon": "resources/icon.ico",
-      "installerHeaderIcon": "resources/icon.ico",
+      "installerIcon": "build-resources/icons/icon.ico",
+      "uninstallerIcon": "build-resources/icons/icon.ico",
+      "installerHeaderIcon": "build-resources/icons/icon.ico",
       "allowToChangeInstallationDirectory": true,
       "perMachine": false,
       "createDesktopShortcut": true,
@@ -228,7 +231,7 @@
       "upgradeCode": "A1B2C3D4-E5F6-G7H8-I9J0-K1L2M3N4O5P6"
     },
     "linux": {
-      "icon": "resources",
+      "icon": "build-resources/icons",
       "category": "Utility",
       "target": [
         {
