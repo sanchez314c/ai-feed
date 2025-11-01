@@ -17,7 +17,7 @@ export const LoadingScreen: React.FC = () => {
       }}
     >
       <Typography
-        variant="h3"
+        variant='h3'
         sx={{
           fontWeight: 700,
           mb: 3,
@@ -29,7 +29,7 @@ export const LoadingScreen: React.FC = () => {
       >
         AIFEED
       </Typography>
-      
+
       <CircularProgress
         size={48}
         sx={{
@@ -37,9 +37,9 @@ export const LoadingScreen: React.FC = () => {
           mb: 2,
         }}
       />
-      
+
       <Typography
-        variant="body1"
+        variant='body1'
         sx={{
           opacity: 0.8,
           textAlign: 'center',

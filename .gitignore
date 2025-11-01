@@ -153,23 +153,95 @@ temp/
 # Local configuration
 config/local.*
 
-# Python (for legacy code)
-venv/
-*.pyc
-__pycache__/
-*.egg-info/
+# Project-specific
+/backup/
+/archive/
+/original_backup_*/
+/temp-*/
+
+# Electron specific
+app/dist/
+release/
+*.dmg.blockmap
+
+# React/Vite specific
+dist-ssr/
+.vite/
 
 # Testing
-.pytest_cache/
-.coverage
-
-# Debug
-*.stackdump
+tests/coverage/
+test-results/
+playwright-report/
+test-results.xml
 
 # Cache
 .cache/
 node_modules/.cache/
 
+# TypeScript
+*.tsbuildinfo
+
+# Build artifacts
+build/
+dist/
+out/
+release/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Runtime
+*.pid
+*.seed
+
+# Coverage
+coverage/
+*.lcov
+
 # Temporary files
 *.tmp
 *.temp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build output
+dist/
+build/
+out/
+release/
+
+# Node modules
+node_modules/
+
+# Cache
+.cache/
+.parcel-cache/
+.vite/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.tempvenv/
+archive/

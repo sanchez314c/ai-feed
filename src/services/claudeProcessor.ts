@@ -19,7 +19,7 @@ export class ClaudeProcessor {
 
   constructor() {
     this.apiKey = process.env.ANTHROPIC_API_KEY;
-    
+
     if (!this.apiKey) {
       logger.warn('ANTHROPIC_API_KEY not found - Claude processing will be disabled');
       return;
@@ -49,24 +49,22 @@ ${text}`;
         messages: [
           {
             role: 'user',
-            content: prompt
-          }
-        ]
+            content: prompt,
+          },
+        ],
       });
 
-      const summary = response.content[0]?.type === 'text' 
-        ? response.content[0].text.trim() 
-        : '';
-      
+      const summary = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+
       return truncateText(summary, maxLength);
     } catch (error) {
       logger.error('Error generating summary with Claude:', error);
-      
+
       if (error instanceof Anthropic.RateLimitError) {
         logger.warn('Claude API rate limit exceeded - using fallback summary');
         await delay(10000); // Wait 10 seconds for rate limit
       }
-      
+
       // Fallback to simple truncation
       return truncateText(text, maxLength);
     }
@@ -103,36 +101,35 @@ JSON response should look like:
         model: this.model,
         max_tokens: 800,
         temperature: 0.1,
-        system: 'You are an expert AI researcher and analyst. Provide structured analysis in valid JSON format only.',
+        system:
+          'You are an expert AI researcher and analyst. Provide structured analysis in valid JSON format only.',
         messages: [
           {
             role: 'user',
-            content: prompt
-          }
-        ]
+            content: prompt,
+          },
+        ],
       });
 
-      const content = response.content[0]?.type === 'text' 
-        ? response.content[0].text.trim() 
-        : '';
-      
+      const content = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+
       const analysis = this.parseClaudeResponse(content);
-      
+
       return {
         ...item,
         categories: analysis.categories,
         importance_score: analysis.importance_score,
         keywords: analysis.keywords,
-        summary: analysis.summary || (await this.generateSummary(contentToAnalyze, 150))
+        summary: analysis.summary || (await this.generateSummary(contentToAnalyze, 150)),
       };
     } catch (error) {
       logger.error('Error categorizing content with Claude:', error);
-      
+
       if (error instanceof Anthropic.RateLimitError) {
         logger.warn('Claude API rate limit exceeded during categorization');
         await delay(15000); // Wait 15 seconds for rate limit
       }
-      
+
       // Return fallback processing
       return this.getFallbackProcessing(item);
     }
@@ -141,7 +138,7 @@ JSON response should look like:
   async batchProcess(items: ContentItem[]): Promise<(ContentItem & ProcessedContent)[]> {
     const processed: (ContentItem & ProcessedContent)[] = [];
     const batchSize = 5; // Process in small batches to avoid rate limits
-    
+
     logger.info(`🤖 Processing ${items.length} items with Claude AI...`);
 
     for (let i = 0; i < items.length; i += batchSize) {
@@ -160,7 +157,7 @@ JSON response should look like:
       try {
         const batchResults = await Promise.all(batchPromises);
         processed.push(...batchResults);
-        
+
         if (i + batchSize < items.length) {
           // Pause between batches
           await delay(2000);
@@ -178,8 +175,12 @@ JSON response should look like:
   }
 
   private getContentForAnalysis(item: ContentItem): string {
-    const commonFields = item as { title?: string; description?: string; [key: string]: any };
-    
+    const commonFields = item as {
+      title?: string;
+      description?: string;
+      [key: string]: any;
+    };
+
     switch (item.type) {
       case 'paper':
         const paper = item as ArxivPaper;
@@ -207,12 +208,12 @@ JSON response should look like:
       }
 
       const parsed = JSON.parse(jsonMatch[0]);
-      
+
       return {
         categories: this.validateCategories(parsed.categories || []),
         importance_score: this.validateImportanceScore(parsed.importance_score || 5),
         keywords: this.validateKeywords(parsed.keywords || []),
-        summary: parsed.suggested_short_summary || ''
+        summary: parsed.suggested_short_summary || '',
       };
     } catch (error) {
       logger.error('Error parsing Claude response:', error);
@@ -222,18 +223,26 @@ JSON response should look like:
 
   private validateCategories(categories: any[]): string[] {
     const validCategories = [
-      'Research', 'Applications', 'Business', 'Ethics', 
-      'Policy', 'Tools', 'Tutorials', 'Hardware', 'Theory', 'Community'
+      'Research',
+      'Applications',
+      'Business',
+      'Ethics',
+      'Policy',
+      'Tools',
+      'Tutorials',
+      'Hardware',
+      'Theory',
+      'Community',
     ];
-    
+
     if (!Array.isArray(categories)) {
       return ['Applications'];
     }
-    
+
     const filtered = categories
       .filter(cat => typeof cat === 'string' && validCategories.includes(cat))
       .slice(0, 3);
-    
+
     return filtered.length > 0 ? filtered : ['Applications'];
   }
 
@@ -249,7 +258,7 @@ JSON response should look like:
     if (!Array.isArray(keywords)) {
       return ['artificial intelligence', 'technology'];
     }
-    
+
     return keywords
       .filter(kw => typeof kw === 'string' && kw.trim().length > 0)
       .map(kw => kw.trim().toLowerCase())
@@ -260,7 +269,7 @@ JSON response should look like:
     return {
       ...item,
       ...this.getDefaultProcessing(),
-      summary: this.extractFallbackSummary(item)
+      summary: this.extractFallbackSummary(item),
     };
   }
 
@@ -269,7 +278,7 @@ JSON response should look like:
       categories: ['Applications'],
       importance_score: 5,
       keywords: ['artificial intelligence', 'technology'],
-      summary: ''
+      summary: '',
     };
   }
 

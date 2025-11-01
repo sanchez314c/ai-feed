@@ -37,7 +37,7 @@ if (isDev) {
 }
 
 // Global error handler
-window.addEventListener('error', (event) => {
+window.addEventListener('error', event => {
   console.error('Global error:', event.error);
   if (window.electronAPI) {
     window.electronAPI.log.error('Renderer error', {
@@ -50,7 +50,7 @@ window.addEventListener('error', (event) => {
   }
 });
 
-window.addEventListener('unhandledrejection', (event) => {
+window.addEventListener('unhandledrejection', event => {
   console.error('Unhandled promise rejection:', event.reason);
   if (window.electronAPI) {
     window.electronAPI.log.error('Unhandled promise rejection', {
@@ -61,14 +61,14 @@ window.addEventListener('unhandledrejection', (event) => {
 
 // Theme wrapper component that responds to theme changes
 function ThemeWrapper({ children }: { children: React.ReactNode }) {
-  const theme = useAppStore((state) => state.theme);
+  const theme = useAppStore(state => state.theme);
   const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
-  
+
   // Apply theme to document root for CSS variables
   React.useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
-  
+
   return (
     <ThemeProvider theme={currentTheme}>
       <CssBaseline />
@@ -78,9 +78,7 @@ function ThemeWrapper({ children }: { children: React.ReactNode }) {
 }
 
 // React root
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
   <React.StrictMode>

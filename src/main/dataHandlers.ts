@@ -3,7 +3,7 @@ import log from 'electron-log';
 
 export function setupDataHandlers(): void {
   // Mock data handlers for now to get the UI working
-  
+
   ipcMain.handle('data:getItems', async (_, filters: any) => {
     log.info('Mock getItems called with filters:', filters);
     // Return empty array for now
@@ -28,17 +28,17 @@ export function setupDataHandlers(): void {
         paper: 0,
         news: 0,
         video: 0,
-        blog: 0
+        blog: 0,
       },
       bySource: {
-        'arXiv': 0,
-        'News': 0,
-        'YouTube': 0,
-        'Blogs': 0
+        arXiv: 0,
+        News: 0,
+        YouTube: 0,
+        Blogs: 0,
       },
       bookmarkedCount: 0,
       readCount: 0,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   });
 
@@ -54,15 +54,15 @@ export function setupDataHandlers(): void {
 
   ipcMain.handle('data:refreshData', async () => {
     log.info('Mock refreshData called');
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: 'Mock refresh completed',
       stats: {
         papers: 0,
         news: 0,
         videos: 0,
-        blogs: 0
-      }
+        blogs: 0,
+      },
     };
   });
 

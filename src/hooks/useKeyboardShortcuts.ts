@@ -18,22 +18,22 @@ export const useKeyboardShortcuts = () => {
             event.preventDefault();
             focusSearch();
             break;
-            
+
           case 'b': // Cmd/Ctrl + B - Toggle sidebar
             event.preventDefault();
             toggleSidebar();
             break;
-            
+
           case 'h': // Cmd/Ctrl + H - Go to dashboard
             event.preventDefault();
             navigate('/dashboard');
             break;
-            
+
           case 'f': // Cmd/Ctrl + F - Go to search
             event.preventDefault();
             navigate('/search');
             break;
-            
+
           case 'n': // Cmd/Ctrl + N - New collection
             event.preventDefault();
             navigate('/collections');
@@ -54,7 +54,7 @@ export const useKeyboardShortcuts = () => {
             event.preventDefault();
             toggleTheme();
             break;
-            
+
           case 'r': // Cmd/Ctrl + Shift + R - Refresh data
             event.preventDefault();
             addNotification({
@@ -71,9 +71,10 @@ export const useKeyboardShortcuts = () => {
       if (!cmdOrCtrl && !event.shiftKey && !event.altKey) {
         // Check if user is typing in an input field
         const activeElement = document.activeElement;
-        const isTyping = activeElement?.tagName === 'INPUT' || 
-                        activeElement?.tagName === 'TEXTAREA' || 
-                        activeElement?.getAttribute('contenteditable') === 'true';
+        const isTyping =
+          activeElement?.tagName === 'INPUT' ||
+          activeElement?.tagName === 'TEXTAREA' ||
+          activeElement?.getAttribute('contenteditable') === 'true';
 
         if (!isTyping) {
           switch (event.key.toLowerCase()) {
@@ -81,7 +82,7 @@ export const useKeyboardShortcuts = () => {
               event.preventDefault();
               focusSearch();
               break;
-              
+
             case '?': // ? - Show shortcuts help
               event.preventDefault();
               showShortcutsHelp();
@@ -93,19 +94,20 @@ export const useKeyboardShortcuts = () => {
       // Number key shortcuts for navigation
       if (!cmdOrCtrl && !event.shiftKey && !event.altKey) {
         const activeElement = document.activeElement;
-        const isTyping = activeElement?.tagName === 'INPUT' || 
-                        activeElement?.tagName === 'TEXTAREA' || 
-                        activeElement?.getAttribute('contenteditable') === 'true';
+        const isTyping =
+          activeElement?.tagName === 'INPUT' ||
+          activeElement?.tagName === 'TEXTAREA' ||
+          activeElement?.getAttribute('contenteditable') === 'true';
 
         if (!isTyping && event.key >= '1' && event.key <= '9') {
           const shortcuts = [
-            '/dashboard',    // 1
-            '/search',       // 2
-            '/collections',  // 3
-            '/analytics',    // 4
-            '/settings',     // 5
+            '/dashboard', // 1
+            '/search', // 2
+            '/collections', // 3
+            '/analytics', // 4
+            '/settings', // 5
           ];
-          
+
           const index = parseInt(event.key) - 1;
           if (shortcuts[index]) {
             event.preventDefault();
@@ -117,7 +119,9 @@ export const useKeyboardShortcuts = () => {
 
     const focusSearch = () => {
       // Focus the search input in the top bar
-      const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLInputElement;
+      const searchInput = document.querySelector(
+        'input[placeholder*="Search"]'
+      ) as HTMLInputElement;
       if (searchInput) {
         searchInput.focus();
         searchInput.select();

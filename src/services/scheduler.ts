@@ -17,7 +17,7 @@ export class DataScheduler {
     this.dataManager = dataManager;
     this.config = config || {
       autoRefreshInterval: '0 */2 * * *', // Every 2 hours
-      enabled: true
+      enabled: true,
     };
 
     logger.info('📅 DataScheduler initialized');
@@ -49,7 +49,7 @@ export class DataScheduler {
       task.stop();
       logger.info(`Stopped scheduled task: ${name}`);
     });
-    
+
     this.tasks.clear();
     this.isRunning = false;
     logger.info('🛑 Scheduler stopped');
@@ -60,7 +60,7 @@ export class DataScheduler {
       try {
         logger.info('🔄 Starting scheduled data refresh...');
         const result = await this.dataManager.refreshData();
-        
+
         if (result.success) {
           logger.info('✅ Scheduled refresh completed:', result.message);
         } else {
@@ -86,7 +86,7 @@ export class DataScheduler {
       logger.error('Manual refresh error:', error);
       return {
         success: false,
-        message: `Manual refresh failed: ${(error as Error).message}`
+        message: `Manual refresh failed: ${(error as Error).message}`,
       };
     }
   }
@@ -94,7 +94,7 @@ export class DataScheduler {
   // Update configuration
   updateConfig(newConfig: Partial<SchedulerConfig>): void {
     const wasRunning = this.isRunning;
-    
+
     if (wasRunning) {
       this.stop();
     }
@@ -122,7 +122,7 @@ export class DataScheduler {
   // Get next scheduled run times
   getNextRuns(): Record<string, Date | null> {
     const nextRuns: Record<string, Date | null> = {};
-    
+
     this.tasks.forEach((task, name) => {
       try {
         // Get the next scheduled run (this is a simplified approach)
@@ -158,7 +158,7 @@ export class DataScheduler {
       }
 
       const delay = date.getTime() - now.getTime();
-      
+
       const timeout = setTimeout(async () => {
         try {
           logger.info('🔄 One-time scheduled refresh starting...');
@@ -188,7 +188,7 @@ export class DataScheduler {
       running: this.isRunning,
       config: this.config,
       activeTasks: this.getScheduledTasks(),
-      nextRuns: this.getNextRuns()
+      nextRuns: this.getNextRuns(),
     };
   }
 }

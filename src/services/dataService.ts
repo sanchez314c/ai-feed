@@ -10,14 +10,14 @@ export class DataService {
 
   constructor(config?: any) {
     logger.info('🚀 Initializing AIFEED DataService...');
-    
+
     // Initialize core services
     this.dataManager = new DataManager(config);
     this.scheduler = new DataScheduler(this.dataManager, {
       autoRefreshInterval: '0 */2 * * *', // Every 2 hours
-      enabled: true
+      enabled: true,
     });
-    
+
     this.setupIPC();
     logger.info('✅ DataService initialized successfully');
   }
@@ -62,7 +62,7 @@ export class DataService {
           bySource: {},
           bookmarkedCount: 0,
           readCount: 0,
-          lastUpdated: 'Never'
+          lastUpdated: 'Never',
         };
       }
     });
@@ -140,12 +140,17 @@ export class DataService {
     logger.info('🔧 IPC handlers registered successfully');
   }
 
-  async refreshData(): Promise<{ success: boolean; message: string; stats?: any }> {
+  async refreshData(): Promise<{
+    success: boolean;
+    message: string;
+    stats?: any;
+  }> {
     if (this.isRefreshing) {
       logger.warn('Data refresh already in progress');
-      return { 
-        success: false, 
-        message: 'Data refresh already in progress. Please wait for the current refresh to complete.' 
+      return {
+        success: false,
+        message:
+          'Data refresh already in progress. Please wait for the current refresh to complete.',
       };
     }
 
@@ -154,7 +159,7 @@ export class DataService {
 
     try {
       const result = await this.dataManager.refreshData();
-      
+
       if (result.success) {
         logger.info('✅ Data refresh completed successfully:', result.message);
       } else {
@@ -165,9 +170,9 @@ export class DataService {
     } catch (error) {
       const message = `Unexpected error during data refresh: ${(error as Error).message}`;
       logger.error('💥 Data refresh error:', error);
-      return { 
-        success: false, 
-        message
+      return {
+        success: false,
+        message,
       };
     } finally {
       this.isRefreshing = false;
@@ -203,7 +208,7 @@ export class DataService {
     return {
       isRefreshing: this.isRefreshing,
       schedulerStatus: this.scheduler.getStatus(),
-      lastRefresh: new Date().toISOString()
+      lastRefresh: new Date().toISOString(),
     };
   }
 
@@ -211,13 +216,13 @@ export class DataService {
   async shutdown(): Promise<void> {
     try {
       logger.info('🛑 Shutting down DataService...');
-      
+
       // Stop the scheduler
       this.scheduler.stop();
-      
+
       // Close the data manager
       this.dataManager.close();
-      
+
       logger.info('✅ DataService shutdown completed');
     } catch (error) {
       logger.error('Error during DataService shutdown:', error);
@@ -225,7 +230,7 @@ export class DataService {
   }
 
   // Health check
-  async healthCheck(): Promise<{ 
+  async healthCheck(): Promise<{
     status: 'healthy' | 'warning' | 'error';
     services: Record<string, boolean>;
     message: string;
@@ -233,31 +238,29 @@ export class DataService {
     try {
       // Check if we can get stats (database connectivity)
       const stats = await this.dataManager.getStats();
-      
+
       // Check scheduler status
       const schedulerStatus = this.scheduler.getStatus();
-      
+
       const services = {
         database: stats.totalItems >= 0, // Simple check
         scheduler: schedulerStatus.running,
-        dataManager: true // If we got here, it's working
+        dataManager: true, // If we got here, it's working
       };
 
       const allHealthy = Object.values(services).every(status => status);
-      
+
       return {
         status: allHealthy ? 'healthy' : 'warning',
         services,
-        message: allHealthy 
-          ? 'All services are running normally'
-          : 'Some services may have issues'
+        message: allHealthy ? 'All services are running normally' : 'Some services may have issues',
       };
     } catch (error) {
       logger.error('Health check failed:', error);
       return {
         status: 'error',
         services: { database: false, scheduler: false, dataManager: false },
-        message: `Health check failed: ${(error as Error).message}`
+        message: `Health check failed: ${(error as Error).message}`,
       };
     }
   }

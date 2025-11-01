@@ -4,7 +4,7 @@
   "description": "AI Intelligence Dashboard - Desktop Application",
   "main": "build/main/main.js",
   "homepage": "./",
-  "author": "theFEED Team",
+  "author": "Jasonn Michaels <sanchez314c@jasonpaulmichaels.co>",
   "license": "MIT",
   "private": true,
   "engines": {
@@ -43,72 +43,81 @@
     "bloat-check": "./scripts/bloat-check.sh",
     "temp-cleanup": "./scripts/temp-cleanup.sh",
     "build-clean": "./scripts/build-compile-dist.sh --skip-temp-clean --skip-bloat",
+    "security-check": "./scripts/security-validation.sh",
+    "quality-check": "./scripts/code-quality-validation.sh",
+    "test-validation": "./scripts/testing-coverage-validation.sh",
+    "performance-check": "./scripts/performance-analysis.sh",
+    "repo-cleanup": "./scripts/repository-cleanup.sh",
+    "final-verify": "./scripts/final-verification.sh",
+    "validate-all": "./scripts/master-build-validation.sh --all",
+    "validate-quick": "./scripts/master-build-validation.sh --quick",
+    "validate-production": "./scripts/master-build-validation.sh",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.59.0",
-    "@emotion/react": "^11.11.1",
-    "@emotion/styled": "^11.11.0",
-    "@mui/icons-material": "^5.14.19",
-    "@mui/material": "^5.14.20",
+    "@anthropic-ai/sdk": "^0.68.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^5.16.14",
+    "@mui/material": "^5.16.14",
     "@mui/x-date-pickers": "^6.20.2",
-    "axios": "^1.6.2",
-    "cheerio": "^1.1.2",
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
     "date-fns": "^3.6.0",
-    "electron-log": "^5.0.0",
-    "electron-store": "^8.1.0",
-    "electron-updater": "^6.1.7",
+    "electron-log": "^5.2.4",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.3.9",
     "lodash": "^4.17.21",
     "node-cron": "^4.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.20.1",
+    "react-router-dom": "^6.30.1",
     "sqlite3": "^5.1.7",
     "xml2js": "^0.6.2",
-    "zustand": "^4.4.7"
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.2.0",
-    "@electron-forge/maker-deb": "^7.2.0",
-    "@electron-forge/maker-rpm": "^7.2.0",
-    "@electron-forge/maker-squirrel": "^7.2.0",
-    "@electron-forge/maker-zip": "^7.2.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
-    "@electron-forge/plugin-fuses": "^7.2.0",
-    "@electron/fuses": "^1.7.0",
-    "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^14.5.1",
-    "@types/jest": "^29.5.8",
-    "@types/lodash": "^4.17.20",
-    "@types/node": "^20.10.0",
+    "@electron-forge/cli": "^7.7.0",
+    "@electron-forge/maker-deb": "^7.7.0",
+    "@electron-forge/maker-rpm": "^7.7.0",
+    "@electron-forge/maker-squirrel": "^7.7.0",
+    "@electron-forge/maker-zip": "^7.7.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.7.0",
+    "@electron-forge/plugin-fuses": "^7.7.0",
+    "@electron/fuses": "^1.8.0",
+    "@testing-library/jest-dom": "^6.7.2",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.0",
+    "@types/jest": "^29.5.14",
+    "@types/lodash": "^4.17.14",
+    "@types/node": "^24.9.2",
     "@types/node-cron": "^3.0.11",
-    "@types/react": "^18.2.38",
-    "@types/react-dom": "^18.2.17",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@types/xml2js": "^0.4.14",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
-    "@vitejs/plugin-react": "^4.1.1",
-    "concurrently": "^8.2.2",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
-    "dotenv": "^17.2.1",
-    "electron": "^28.0.0",
+    "dotenv": "^16.5.0",
+    "electron": "^39.0.0",
     "electron-builder": "^26.0.12",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^8.0.3",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "lint-staged": "^15.1.0",
-    "prettier": "^3.1.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.2",
-    "vite": "^5.0.0",
-    "wait-on": "^8.0.4"
+    "lint-staged": "^15.5.2",
+    "prettier": "^3.4.2",
+    "ts-jest": "^29.2.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12",
+    "wait-on": "^8.0.5"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -122,7 +131,7 @@
     "setupFilesAfterEnv": [
       "<rootDir>/src/setupTests.ts"
     ],
-    "moduleNameMapping": {
+    "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
     "collectCoverageFrom": [
@@ -134,7 +143,7 @@
   "build": {
     "appId": "com.aifeed.app",
     "productName": "AIFEED",
-    "copyright": "Copyright © 2024 AIFEED Team",
+    "copyright": "Copyright © 2024 Jasonn Michaels",
     "directories": {
       "output": "dist",
       "buildResources": "build-resources"
@@ -146,7 +155,16 @@
       "!node_modules/.cache",
       "!node_modules/.bin",
       "!**/*.{md,txt,log}",
-      "!**/*.map"
+      "!**/*.map",
+      "!node_modules/**/*.md",
+      "!node_modules/**/*.txt",
+      "!node_modules/**/test/**",
+      "!node_modules/**/tests/**",
+      "!node_modules/**/example*",
+      "!node_modules/**/examples/**",
+      "!node_modules/**/*.d.ts",
+      "!node_modules/**/.github/**",
+      "!node_modules/**/coverage/**"
     ],
     "mac": {
       "category": "public.app-category.productivity",
@@ -154,6 +172,7 @@
       "hardenedRuntime": false,
       "gatekeeperAssess": false,
       "forceCodeSigning": false,
+      "identity": null,
       "target": [
         {
           "target": "dmg",
@@ -233,6 +252,7 @@
     "linux": {
       "icon": "build-resources/icons",
       "category": "Utility",
+      "executableName": "aifeed",
       "target": [
         {
           "target": "AppImage",
@@ -258,18 +278,7 @@
             "x64"
           ]
         }
-      ],
-      "desktop": {
-        "entry": {
-          "Name": "AIFEED",
-          "Comment": "AI Intelligence Dashboard", 
-          "Exec": "aifeed",
-          "Icon": "aifeed",
-          "Type": "Application",
-          "Categories": "Utility;",
-          "StartupNotify": "true"
-        }
-      }
+      ]
     },
     "deb": {
       "depends": [

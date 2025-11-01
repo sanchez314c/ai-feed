@@ -46,7 +46,7 @@ const defaultPreferences: UserPreferences = {
   },
   categories: [
     'Research',
-    'Applications', 
+    'Applications',
     'Business',
     'Ethics',
     'Tools',
@@ -72,23 +72,23 @@ export const useAppStore = create<AppStore>()(
         // Actions
         initialize: async () => {
           set({ loading: true, error: null });
-          
+
           try {
             // Initialize app settings
-            const storedTheme = await window.electronAPI?.store.get('theme') as 'light' | 'dark';
-            const storedSidebar = await window.electronAPI?.store.get('sidebarOpen') as boolean;
-            
+            const storedTheme = (await window.electronAPI?.store.get('theme')) as 'light' | 'dark';
+            const storedSidebar = (await window.electronAPI?.store.get('sidebarOpen')) as boolean;
+
             if (storedTheme) {
               set({ theme: storedTheme });
               document.documentElement.setAttribute('data-theme', storedTheme);
             }
-            
+
             if (typeof storedSidebar === 'boolean') {
               set({ sidebarOpen: storedSidebar });
             }
 
             // Create default user if none exists
-            const existingUser = await window.electronAPI?.store.get('user') as User;
+            const existingUser = (await window.electronAPI?.store.get('user')) as User;
             if (!existingUser) {
               const defaultUser: User = {
                 id: 'local-user',
@@ -100,7 +100,7 @@ export const useAppStore = create<AppStore>()(
                 createdAt: new Date(),
                 lastActive: new Date(),
               };
-              
+
               await window.electronAPI?.store.set('user', defaultUser);
               set({ user: defaultUser });
             } else {
@@ -108,32 +108,32 @@ export const useAppStore = create<AppStore>()(
             }
 
             set({ loading: false });
-            
+
             if (window.electronAPI) {
               await window.electronAPI.log.info('App initialized successfully');
             }
-            
           } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Failed to initialize app';
+            const errorMessage =
+              error instanceof Error ? error.message : 'Failed to initialize app';
             set({ error: errorMessage, loading: false });
-            
+
             if (window.electronAPI) {
               await window.electronAPI.log.error('App initialization failed', error);
             }
           }
         },
 
-        setUser: (user) => {
+        setUser: user => {
           set({ user });
           if (window.electronAPI && user) {
             window.electronAPI.store.set('user', user);
           }
         },
 
-        setTheme: (theme) => {
+        setTheme: theme => {
           set({ theme });
           document.documentElement.setAttribute('data-theme', theme);
-          
+
           if (window.electronAPI) {
             window.electronAPI.store.set('theme', theme);
           }
@@ -145,7 +145,7 @@ export const useAppStore = create<AppStore>()(
           get().setTheme(newTheme);
         },
 
-        setSidebarOpen: (sidebarOpen) => {
+        setSidebarOpen: sidebarOpen => {
           set({ sidebarOpen });
           if (window.electronAPI) {
             window.electronAPI.store.set('sidebarOpen', sidebarOpen);
@@ -157,18 +157,18 @@ export const useAppStore = create<AppStore>()(
           get().setSidebarOpen(!sidebarOpen);
         },
 
-        setLoading: (loading) => set({ loading }),
-        
-        setError: (error) => set({ error }),
+        setLoading: loading => set({ loading }),
 
-        addNotification: (notification) => {
+        setError: error => set({ error }),
+
+        addNotification: notification => {
           const newNotification: Notification = {
             ...notification,
             id: `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             createdAt: new Date(),
           };
 
-          set((state) => ({
+          set(state => ({
             notifications: [...state.notifications, newNotification],
           }));
 
@@ -180,9 +180,9 @@ export const useAppStore = create<AppStore>()(
           }
         },
 
-        removeNotification: (id) => {
-          set((state) => ({
-            notifications: state.notifications.filter((n) => n.id !== id),
+        removeNotification: id => {
+          set(state => ({
+            notifications: state.notifications.filter(n => n.id !== id),
           }));
         },
 
@@ -190,7 +190,7 @@ export const useAppStore = create<AppStore>()(
           set({ notifications: [] });
         },
 
-        updateUserPreferences: async (preferences) => {
+        updateUserPreferences: async preferences => {
           const { user } = get();
           if (!user) return;
 
@@ -203,7 +203,7 @@ export const useAppStore = create<AppStore>()(
           };
 
           set({ user: updatedUser });
-          
+
           if (window.electronAPI) {
             await window.electronAPI.store.set('user', updatedUser);
           }
@@ -216,7 +216,7 @@ export const useAppStore = create<AppStore>()(
       }),
       {
         name: 'aifeed-app-store',
-        partialize: (state) => ({
+        partialize: state => ({
           theme: state.theme,
           sidebarOpen: state.sidebarOpen,
         }),

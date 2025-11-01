@@ -5,9 +5,11 @@
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
-![Electron](https://img.shields.io/badge/Electron-28.0.0-9FEAF9.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3.2-3178C6.svg)
-![React](https://img.shields.io/badge/React-18.2.0-61DAFB.svg)
+![Electron](https://img.shields.io/badge/Electron-39.0.0-9FEAF9.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6.svg)
+![React](https://img.shields.io/badge/React-19.2.0-61DAFB.svg)
+
+**Repository:** [https://github.com/sanchez314c/ai-feed](https://github.com/sanchez314c/ai-feed)
 
 ## Quick Start
 
@@ -15,14 +17,9 @@
 
 1. **Start development server:**
    ```bash
-   npm run dev:renderer
+   npm run dev
    ```
-   Wait for "ready" message, note the port (usually 3000 or 3001)
-
-2. **In a new terminal, start Electron:**
-   ```bash
-   npm run dev:main
-   ```
+   This will automatically start both the renderer and main process in development mode.
 
 **The application should now open with the blue AIFEED interface!**
 
@@ -56,8 +53,8 @@
 
 ```bash
 # Clone repository
-git clone https://github.com/spacewelder314/theFEED.git
-cd theFEED
+git clone https://github.com/sanchez314c/ai-feed.git
+cd ai-feed
 
 # Install dependencies
 npm install
@@ -76,23 +73,22 @@ npm run dist
 ## Project Structure
 
 ```
-theFEED/
+ai-feed/
 ├── src/               # Source code
 │   ├── main/         # Electron main process
 │   ├── renderer/     # React frontend
 │   ├── services/     # API services
 │   └── types/        # TypeScript types
 ├── dist/             # Built applications
-│   ├── mac-intel/    # macOS Intel builds
-│   ├── mac-arm64/    # macOS ARM builds
-│   ├── win-x64-unpacked/  # Windows builds
-│   └── linux-unpacked/    # Linux builds
-├── resources/        # Application resources
+│   ├── mac/          # macOS builds (Intel + ARM)
+│   ├── win/          # Windows builds
+│   └── linux/        # Linux builds
+├── build-resources/  # Application resources
 │   ├── icons/        # App icons
 │   └── screenshots/  # Screenshots
 ├── scripts/          # Build and utility scripts
-├── archive/          # Legacy versions and old builds
-└── docs/             # Documentation
+├── docs/             # Documentation
+└── archive/          # Legacy versions and old builds
 ```
 
 ## Development
@@ -104,17 +100,26 @@ npm run dev
 # Run tests
 npm test
 
+# Test coverage
+npm run test:coverage
+
 # Lint code
 npm run lint
 
 # Type checking
 npm run type-check
 
+# Clean build artifacts
+npm run clean
+
 # Build for current platform
 npm run dist:current
 
-# Build for all platforms
-npm run dist
+# Build for all platforms (maximum variants)
+npm run dist:maximum
+
+# Bloat analysis
+npm run bloat-check
 ```
 
 ## Environment Variables

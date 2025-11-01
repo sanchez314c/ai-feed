@@ -43,7 +43,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      
+
       {/* Render notifications as snackbars */}
       {notifications.map((notification, index) => (
         <Snackbar
@@ -59,7 +59,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
           <Alert
             onClose={() => handleClose(notification.id)}
             severity={notification.type}
-            variant="filled"
+            variant='filled'
             sx={{ width: '100%' }}
           >
             {notification.title}

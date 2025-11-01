@@ -16,22 +16,38 @@ export class DataManager {
     this.collector = new DataCollector(this.config);
     this.processor = new ClaudeProcessor();
     this.database = new DatabaseService();
-    
+
     logger.info('🚀 DataManager initialized');
   }
 
   private getDefaultConfig() {
     return {
       sources: {
-        arxiv: { enabled: true, categories: ['cs.AI', 'cs.CL', 'cs.CV', 'cs.LG', 'cs.NE'], max_results: 50 },
-        news: { enabled: true, keywords: ['AI', 'machine learning', 'deep learning'], max_results: 30 },
-        youtube: { enabled: true, channels: ['UCBFYP1bFUiGkLr6WMz7Kq7g'], max_results: 20 },
-        company_blogs: { enabled: true, feeds: [], max_results: 25 }
-      }
+        arxiv: {
+          enabled: true,
+          categories: ['cs.AI', 'cs.CL', 'cs.CV', 'cs.LG', 'cs.NE'],
+          max_results: 50,
+        },
+        news: {
+          enabled: true,
+          keywords: ['AI', 'machine learning', 'deep learning'],
+          max_results: 30,
+        },
+        youtube: {
+          enabled: true,
+          channels: ['UCBFYP1bFUiGkLr6WMz7Kq7g'],
+          max_results: 20,
+        },
+        company_blogs: { enabled: true, feeds: [], max_results: 25 },
+      },
     };
   }
 
-  async refreshData(): Promise<{ success: boolean; message: string; stats?: any }> {
+  async refreshData(): Promise<{
+    success: boolean;
+    message: string;
+    stats?: any;
+  }> {
     try {
       logger.info('🔄 Starting comprehensive data refresh...');
       const startTime = Date.now();
@@ -39,16 +55,17 @@ export class DataManager {
       // Step 1: Collect raw data from all sources
       logger.info('📥 Collecting data from all sources...');
       const rawData = await this.collector.collectAllData();
-      
-      const totalCollected = rawData.arxiv_papers.length + 
-                            rawData.news_articles.length + 
-                            rawData.youtube_videos.length + 
-                            rawData.blog_posts.length;
+
+      const totalCollected =
+        rawData.arxiv_papers.length +
+        rawData.news_articles.length +
+        rawData.youtube_videos.length +
+        rawData.blog_posts.length;
 
       if (totalCollected === 0) {
         return {
           success: false,
-          message: 'No new data collected from any sources'
+          message: 'No new data collected from any sources',
         };
       }
 
@@ -59,7 +76,7 @@ export class DataManager {
         ...rawData.arxiv_papers,
         ...rawData.news_articles,
         ...rawData.youtube_videos,
-        ...rawData.blog_posts
+        ...rawData.blog_posts,
       ];
 
       logger.info('🤖 Processing items with AI analysis...');
@@ -88,9 +105,9 @@ export class DataManager {
             arxiv: rawData.arxiv_papers.length,
             news: rawData.news_articles.length,
             youtube: rawData.youtube_videos.length,
-            blogs: rawData.blog_posts.length
-          }
-        }
+            blogs: rawData.blog_posts.length,
+          },
+        },
       };
 
       logger.info('✅ Data refresh completed successfully!', result.stats);
@@ -99,7 +116,7 @@ export class DataManager {
       logger.error('❌ Data refresh failed:', error);
       return {
         success: false,
-        message: `Data refresh failed: ${(error as Error).message}`
+        message: `Data refresh failed: ${(error as Error).message}`,
       };
     }
   }
@@ -122,7 +139,7 @@ export class DataManager {
       channel: (item as any).channel || undefined,
       bookmarked: false,
       is_read: false,
-      processed_at: getTimestamp()
+      processed_at: getTimestamp(),
     };
 
     return dbItem;
@@ -131,7 +148,7 @@ export class DataManager {
   private async updateSourceMetadata(data: DataCollectionResult): Promise<void> {
     try {
       const timestamp = getTimestamp();
-      
+
       // Update arXiv metadata
       if (data.arxiv_papers.length > 0) {
         const lastArxivId = data.arxiv_papers[0].id;
@@ -160,14 +177,16 @@ export class DataManager {
     }
   }
 
-  async getItems(options: {
-    limit?: number;
-    offset?: number;
-    type?: string;
-    source?: string;
-    bookmarked?: boolean;
-    search?: string;
-  } = {}): Promise<DatabaseContentItem[]> {
+  async getItems(
+    options: {
+      limit?: number;
+      offset?: number;
+      type?: string;
+      source?: string;
+      bookmarked?: boolean;
+      search?: string;
+    } = {}
+  ): Promise<DatabaseContentItem[]> {
     try {
       return await this.database.getItems(options);
     } catch (error) {
@@ -187,7 +206,7 @@ export class DataManager {
         bySource: {},
         bookmarkedCount: 0,
         readCount: 0,
-        lastUpdated: 'Never'
+        lastUpdated: 'Never',
       };
     }
   }

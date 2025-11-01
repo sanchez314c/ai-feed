@@ -41,7 +41,11 @@ export interface ElectronAPI {
     updateBookmark: (id: string, bookmarked: boolean) => Promise<boolean>;
     updateReadStatus: (id: string, isRead: boolean) => Promise<boolean>;
     getStats: () => Promise<any>;
-    refreshData: () => Promise<{ success: boolean; message: string; stats?: any }>;
+    refreshData: () => Promise<{
+      success: boolean;
+      message: string;
+      stats?: any;
+    }>;
     isRefreshing: () => Promise<boolean>;
   };
 
@@ -56,47 +60,49 @@ const electronAPI: ElectronAPI = {
   store: {
     get: (key: string) => ipcRenderer.invoke('store:get', key),
     set: (key: string, value: any) => ipcRenderer.invoke('store:set', key, value),
-    delete: (key: string) => ipcRenderer.invoke('store:delete', key)
+    delete: (key: string) => ipcRenderer.invoke('store:delete', key),
   },
-  
+
   app: {
     getVersion: () => ipcRenderer.invoke('app:getVersion'),
-    getName: () => ipcRenderer.invoke('app:getName')
+    getName: () => ipcRenderer.invoke('app:getName'),
   },
-  
+
   window: {
     minimize: () => ipcRenderer.invoke('window:minimize'),
     maximize: () => ipcRenderer.invoke('window:maximize'),
-    close: () => ipcRenderer.invoke('window:close')
+    close: () => ipcRenderer.invoke('window:close'),
   },
-  
+
   shell: {
-    openExternal: (url: string) => ipcRenderer.invoke('shell:openExternal', url)
+    openExternal: (url: string) => ipcRenderer.invoke('shell:openExternal', url),
   },
-  
+
   log: {
     info: (message: string, meta?: any) => ipcRenderer.invoke('log:info', message, meta),
-    error: (message: string, error?: any) => ipcRenderer.invoke('log:error', message, error)
+    error: (message: string, error?: any) => ipcRenderer.invoke('log:error', message, error),
   },
-  
+
   data: {
     getItems: (filters?: any) => ipcRenderer.invoke('data:getItems', filters),
     getItemById: (id: string) => ipcRenderer.invoke('data:getItemById', id),
     searchItems: (query: string) => ipcRenderer.invoke('data:searchItems', query),
-    updateBookmark: (id: string, bookmarked: boolean) => ipcRenderer.invoke('data:updateBookmark', id, bookmarked),
-    updateReadStatus: (id: string, isRead: boolean) => ipcRenderer.invoke('data:updateReadStatus', id, isRead),
+    updateBookmark: (id: string, bookmarked: boolean) =>
+      ipcRenderer.invoke('data:updateBookmark', id, bookmarked),
+    updateReadStatus: (id: string, isRead: boolean) =>
+      ipcRenderer.invoke('data:updateReadStatus', id, isRead),
     getStats: () => ipcRenderer.invoke('data:getStats'),
     refreshData: () => ipcRenderer.invoke('data:refreshData'),
-    isRefreshing: () => ipcRenderer.invoke('data:isRefreshing')
+    isRefreshing: () => ipcRenderer.invoke('data:isRefreshing'),
   },
-  
+
   on: (channel: string, callback: (data: any) => void) => {
     ipcRenderer.on(channel, (_, data) => callback(data));
   },
-  
+
   off: (channel: string, callback: (data: any) => void) => {
     ipcRenderer.removeListener(channel, callback);
-  }
+  },
 };
 
 // Expose the API to the renderer process

@@ -17,10 +17,10 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 const App: React.FC = () => {
   const { loading, error, initialize } = useAppStore();
   const { user, isLoading: authLoading } = useAuth();
-  
+
   // Initialize WebSocket connection
   useWebSocket();
-  
+
   // Set up keyboard shortcuts
   useKeyboardShortcuts();
 
@@ -51,19 +51,17 @@ const App: React.FC = () => {
   // Show error if initialization failed
   if (error) {
     return (
-      <Box 
-        display="flex" 
-        flexDirection="column" 
-        alignItems="center" 
-        justifyContent="center" 
-        height="100vh"
+      <Box
+        display='flex'
+        flexDirection='column'
+        alignItems='center'
+        justifyContent='center'
+        height='100vh'
         p={3}
       >
         <h1>Initialization Error</h1>
         <p>{error}</p>
-        <button onClick={() => window.location.reload()}>
-          Retry
-        </button>
+        <button onClick={() => window.location.reload()}>Retry</button>
       </Box>
     );
   }
@@ -71,16 +69,16 @@ const App: React.FC = () => {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/sources/:source" element={<Dashboard />} />
-        <Route path="/topics/:topic" element={<Dashboard />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/collections" element={<Collections />} />
-        <Route path="/collections/:id" element={<Collections />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path='/' element={<Navigate to='/dashboard' replace />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/sources/:source' element={<Dashboard />} />
+        <Route path='/topics/:topic' element={<Dashboard />} />
+        <Route path='/search' element={<Search />} />
+        <Route path='/collections' element={<Collections />} />
+        <Route path='/collections/:id' element={<Collections />} />
+        <Route path='/analytics' element={<Analytics />} />
+        <Route path='/settings' element={<Settings />} />
+        <Route path='*' element={<Navigate to='/dashboard' replace />} />
       </Routes>
     </Layout>
   );

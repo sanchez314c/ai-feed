@@ -16,7 +16,7 @@ log.info('Application starting...');
 // Initialize secure store
 const store = new Store({
   name: 'aifeed-config',
-  encryptionKey: 'aifeed-secure-key-change-in-production'
+  encryptionKey: 'aifeed-secure-key-change-in-production',
 });
 
 class AIfeedApplication {
@@ -59,7 +59,7 @@ class AIfeedApplication {
     app.on('web-contents-created', (_, contents) => {
       contents.setWindowOpenHandler(({ url }) => {
         const parsedUrl = new URL(url);
-        
+
         if (parsedUrl.origin !== 'http://localhost:3000' && parsedUrl.origin !== 'file://') {
           shell.openExternal(url);
           return { action: 'deny' };
@@ -75,7 +75,7 @@ class AIfeedApplication {
       width: 1400,
       height: 900,
       x: undefined,
-      y: undefined
+      y: undefined,
     }) as { width: number; height: number; x?: number; y?: number };
 
     this.mainWindow = new BrowserWindow({
@@ -94,25 +94,25 @@ class AIfeedApplication {
         sandbox: false,
         contextIsolation: true,
         nodeIntegration: false,
-        webSecurity: true
-      }
+        webSecurity: true,
+      },
     });
 
     // Event handlers for the main window
     this.mainWindow.on('ready-to-show', () => {
       if (this.mainWindow) {
         this.mainWindow.show();
-        
+
         if (isDev) {
           this.mainWindow.webContents.openDevTools();
         }
-        
+
         // Log what's actually loading
         console.log('Main window loaded successfully');
       }
     });
 
-    this.mainWindow.on('close', (event) => {
+    this.mainWindow.on('close', event => {
       if (!this.isQuitting && process.platform === 'darwin') {
         event.preventDefault();
         this.mainWindow?.hide();
@@ -128,7 +128,7 @@ class AIfeedApplication {
       this.mainWindow = null;
     });
 
-    this.mainWindow.webContents.setWindowOpenHandler((details) => {
+    this.mainWindow.webContents.setWindowOpenHandler(details => {
       shell.openExternal(details.url);
       return { action: 'deny' };
     });
@@ -147,12 +147,15 @@ class AIfeedApplication {
       log.info(`Current __dirname: ${__dirname}`);
       this.mainWindow.loadFile(prodPath);
     }
-    
+
     // Add error logging
-    this.mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
-      log.error(`FAILED TO LOAD: ${validatedURL} - ${errorDescription} (${errorCode})`);
-    });
-    
+    this.mainWindow.webContents.on(
+      'did-fail-load',
+      (event, errorCode, errorDescription, validatedURL) => {
+        log.error(`FAILED TO LOAD: ${validatedURL} - ${errorDescription} (${errorCode})`);
+      }
+    );
+
     this.mainWindow.webContents.on('did-finish-load', () => {
       log.info(`SUCCESS: Loaded window`);
     });
@@ -172,8 +175,8 @@ class AIfeedApplication {
             { role: 'hideothers' },
             { role: 'unhide' },
             { type: 'separator' },
-            { role: 'quit' }
-          ]
+            { role: 'quit' },
+          ],
         },
         {
           label: 'File',
@@ -181,20 +184,20 @@ class AIfeedApplication {
             {
               label: 'New Collection',
               accelerator: 'Cmd+N',
-              click: () => this.sendToRenderer('menu:new-collection')
+              click: () => this.sendToRenderer('menu:new-collection'),
             },
             { type: 'separator' },
             {
               label: 'Import',
               accelerator: 'Cmd+I',
-              click: () => this.sendToRenderer('menu:import')
+              click: () => this.sendToRenderer('menu:import'),
             },
             {
               label: 'Export',
               accelerator: 'Cmd+E',
-              click: () => this.sendToRenderer('menu:export')
-            }
-          ]
+              click: () => this.sendToRenderer('menu:export'),
+            },
+          ],
         },
         {
           label: 'Edit',
@@ -205,8 +208,8 @@ class AIfeedApplication {
             { role: 'cut' },
             { role: 'copy' },
             { role: 'paste' },
-            { role: 'selectall' }
-          ]
+            { role: 'selectall' },
+          ],
         },
         {
           label: 'View',
@@ -214,7 +217,7 @@ class AIfeedApplication {
             {
               label: 'Refresh',
               accelerator: 'Cmd+R',
-              click: () => this.sendToRenderer('menu:refresh')
+              click: () => this.sendToRenderer('menu:refresh'),
             },
             { type: 'separator' },
             { role: 'reload' },
@@ -225,16 +228,13 @@ class AIfeedApplication {
             { role: 'zoomIn' },
             { role: 'zoomOut' },
             { type: 'separator' },
-            { role: 'togglefullscreen' }
-          ]
+            { role: 'togglefullscreen' },
+          ],
         },
         {
           label: 'Window',
-          submenu: [
-            { role: 'minimize' },
-            { role: 'close' }
-          ]
-        }
+          submenu: [{ role: 'minimize' }, { role: 'close' }],
+        },
       ];
 
       Menu.setApplicationMenu(Menu.buildFromTemplate(template as any));
@@ -303,7 +303,7 @@ class AIfeedApplication {
   private setupAutoUpdater(): void {
     if (!isDev) {
       autoUpdater.checkForUpdatesAndNotify();
-      
+
       autoUpdater.on('update-available', () => {
         log.info('Update available');
         this.sendToRenderer('updater:update-available');
@@ -326,10 +326,10 @@ class AIfeedApplication {
   //   try {
   //     log.info('Initializing data service...');
   //     this.dataService = new DataService();
-      
+
   //     // Start auto-refresh
   //     this.dataService.startAutoRefresh();
-      
+
   //     log.info('Data service initialized successfully');
   //   } catch (error) {
   //     log.error('Failed to initialize data service:', error);

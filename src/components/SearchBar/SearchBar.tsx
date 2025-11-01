@@ -38,7 +38,7 @@ export const SearchBar: React.FC = () => {
     'neural networks',
     'computer vision',
   ]);
-  
+
   const inputRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -53,7 +53,12 @@ export const SearchBar: React.FC = () => {
       // Mock suggestions - in real app, this would call an API
       const mockSuggestions: SearchSuggestion[] = [
         { id: '1', text: `${query} research`, type: 'suggestion', count: 145 },
-        { id: '2', text: `${query} applications`, type: 'suggestion', count: 89 },
+        {
+          id: '2',
+          text: `${query} applications`,
+          type: 'suggestion',
+          count: 89,
+        },
         { id: '3', text: `${query} tutorial`, type: 'suggestion', count: 67 },
         { id: '4', text: `${query} paper`, type: 'suggestion', count: 234 },
       ];
@@ -66,7 +71,7 @@ export const SearchBar: React.FC = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
     setValue(newValue);
-    
+
     if (newValue.trim()) {
       debouncedGetSuggestions(newValue);
       setOpen(true);
@@ -106,7 +111,7 @@ export const SearchBar: React.FC = () => {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setValue('');
       setOpen(false);
-      
+
       // TODO: Add to recent searches
     }
   };
@@ -133,11 +138,11 @@ export const SearchBar: React.FC = () => {
   const getSuggestionIcon = (type: SearchSuggestion['type']) => {
     switch (type) {
       case 'recent':
-        return <HistoryIcon fontSize="small" color="action" />;
+        return <HistoryIcon fontSize='small' color='action' />;
       case 'suggestion':
-        return <SearchIcon fontSize="small" color="action" />;
+        return <SearchIcon fontSize='small' color='action' />;
       default:
-        return <SearchIcon fontSize="small" color="action" />;
+        return <SearchIcon fontSize='small' color='action' />;
     }
   };
 
@@ -146,27 +151,23 @@ export const SearchBar: React.FC = () => {
       <TextField
         ref={inputRef}
         fullWidth
-        variant="outlined"
-        placeholder="Search AI content..."
+        variant='outlined'
+        placeholder='Search AI content...'
         value={value}
         onChange={handleInputChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyPress}
-        size="small"
+        size='small'
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon color="action" />
+            <InputAdornment position='start'>
+              <SearchIcon color='action' />
             </InputAdornment>
           ),
           endAdornment: value && (
-            <InputAdornment position="end">
-              <IconButton
-                size="small"
-                onClick={handleClear}
-                edge="end"
-              >
+            <InputAdornment position='end'>
+              <IconButton size='small' onClick={handleClear} edge='end'>
                 <ClearIcon />
               </IconButton>
             </InputAdornment>
@@ -189,7 +190,7 @@ export const SearchBar: React.FC = () => {
       <Popper
         open={open && suggestions.length > 0}
         anchorEl={inputRef.current}
-        placement="bottom-start"
+        placement='bottom-start'
         style={{ width: inputRef.current?.offsetWidth, zIndex: 1300 }}
         transition
       >
@@ -208,13 +209,13 @@ export const SearchBar: React.FC = () => {
               <List dense>
                 {!value.trim() && recentSearches.length > 0 && (
                   <ListItem>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='caption' color='text.secondary'>
                       Recent searches
                     </Typography>
                   </ListItem>
                 )}
-                
-                {suggestions.map((suggestion) => (
+
+                {suggestions.map(suggestion => (
                   <ListItem
                     key={suggestion.id}
                     button
@@ -228,18 +229,16 @@ export const SearchBar: React.FC = () => {
                     <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                       {getSuggestionIcon(suggestion.type)}
                     </Box>
-                    
+
                     <ListItemText
                       primary={
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="body2">
-                            {suggestion.text}
-                          </Typography>
+                          <Typography variant='body2'>{suggestion.text}</Typography>
                           {suggestion.count && (
                             <Chip
-                              size="small"
+                              size='small'
                               label={suggestion.count}
-                              variant="outlined"
+                              variant='outlined'
                               sx={{ height: 20, fontSize: '0.75rem' }}
                             />
                           )}

@@ -19,23 +19,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex', height: '100vh' }}>
       <CssBaseline />
-      
+
       {/* Top Bar */}
-      <TopBar
-        sidebarWidth={sidebarOpen ? sidebarWidth : collapsedWidth}
-        isMobile={isMobile}
-      />
-      
+      <TopBar sidebarWidth={sidebarOpen ? sidebarWidth : collapsedWidth} isMobile={isMobile} />
+
       {/* Sidebar */}
-      <Sidebar
-        width={sidebarWidth}
-        collapsedWidth={collapsedWidth}
-        isMobile={isMobile}
-      />
-      
+      <Sidebar width={sidebarWidth} collapsedWidth={collapsedWidth} isMobile={isMobile} />
+
       {/* Main Content */}
       <Box
-        component="main"
+        component='main'
         sx={{
           flexGrow: 1,
           pt: '64px', // Height of top bar

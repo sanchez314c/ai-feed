@@ -9,7 +9,7 @@ export interface ContentItem {
   publishedAt: Date;
   collectedAt: Date;
   updatedAt: Date;
-  
+
   // Content analysis
   summary?: string;
   abstract?: string;
@@ -17,12 +17,12 @@ export interface ContentItem {
   keywords: string[];
   importance: number; // 1-10 scale
   sentiment?: 'positive' | 'negative' | 'neutral';
-  
+
   // User interactions
   bookmarked: boolean;
   read: boolean;
   annotations: Annotation[];
-  
+
   // Metadata
   metadata: Record<string, any>;
   thumbnail?: string;
@@ -166,7 +166,15 @@ export interface FacetCount {
 // Type definitions
 export type ContentType = 'paper' | 'news' | 'video' | 'blog' | 'podcast' | 'repository' | 'tweet';
 
-export type SourceType = 'arxiv' | 'news' | 'youtube' | 'rss' | 'github' | 'twitter' | 'pubmed' | 'semantic-scholar';
+export type SourceType =
+  | 'arxiv'
+  | 'news'
+  | 'youtube'
+  | 'rss'
+  | 'github'
+  | 'twitter'
+  | 'pubmed'
+  | 'semantic-scholar';
 
 export type UserRole = 'user' | 'admin' | 'moderator';
 

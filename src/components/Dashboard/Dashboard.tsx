@@ -70,16 +70,15 @@ export const Dashboard: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Load items and stats in parallel
       const [itemsData, statsData] = await Promise.all([
         window.electronAPI?.data.getItems({ limit: 50, ...filter }) || [],
-        window.electronAPI?.data.getStats() || null
+        window.electronAPI?.data.getStats() || null,
       ]);
-      
+
       setItems(itemsData);
       setStats(statsData);
-      
     } catch (err) {
       console.error('Error loading data:', err);
       setError('Failed to load data. Please try refreshing.');
@@ -92,7 +91,7 @@ export const Dashboard: React.FC = () => {
     try {
       setRefreshing(true);
       const result = await window.electronAPI?.data.refreshData();
-      
+
       if (result?.success) {
         // Reload data after refresh
         await loadData();
@@ -114,18 +113,22 @@ export const Dashboard: React.FC = () => {
 
       const newBookmarked = !item.bookmarked;
       const success = await window.electronAPI?.data.updateBookmark(itemId, newBookmarked);
-      
+
       if (success) {
-        setItems(prev => prev.map(i => 
-          i.id === itemId ? { ...i, bookmarked: newBookmarked } : i
-        ));
-        
+        setItems(prev =>
+          prev.map(i => (i.id === itemId ? { ...i, bookmarked: newBookmarked } : i))
+        );
+
         // Update stats
         if (stats) {
-          setStats(prev => prev ? {
-            ...prev,
-            bookmarkedCount: prev.bookmarkedCount + (newBookmarked ? 1 : -1)
-          } : null);
+          setStats(prev =>
+            prev
+              ? {
+                  ...prev,
+                  bookmarkedCount: prev.bookmarkedCount + (newBookmarked ? 1 : -1),
+                }
+              : null
+          );
         }
       }
     } catch (err) {
@@ -144,7 +147,7 @@ export const Dashboard: React.FC = () => {
   useEffect(() => {
     // Parse the current route to determine filters
     const path = location.pathname;
-    
+
     if (path.includes('/sources/')) {
       const source = path.split('/sources/')[1];
       if (source === 'arxiv') {
@@ -210,32 +213,41 @@ export const Dashboard: React.FC = () => {
         return false;
       }
     }
-    
+
     // Then apply tab filter
     switch (activeTab) {
-      case 0: return true; // All
-      case 1: return item.content_type === 'paper';
-      case 2: return item.content_type === 'news' || item.content_type === 'blog';
-      case 3: return item.content_type === 'video';
-      case 4: return item.source === 'X.com'; // X.com posts
-      case 5: return item.bookmarked;
-      default: return true;
+      case 0:
+        return true; // All
+      case 1:
+        return item.content_type === 'paper';
+      case 2:
+        return item.content_type === 'news' || item.content_type === 'blog';
+      case 3:
+        return item.content_type === 'video';
+      case 4:
+        return item.source === 'X.com'; // X.com posts
+      case 5:
+        return item.bookmarked;
+      default:
+        return true;
     }
   });
 
   if (loading) {
     return (
-      <Box sx={{ 
-        height: '100%', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        flexDirection: 'column',
-        gap: 2
-      }}>
+      <Box
+        sx={{
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: 2,
+        }}
+      >
         <CircularProgress size={60} />
-        <Typography variant="h6">Loading AI content...</Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant='h6'>Loading AI content...</Typography>
+        <Typography variant='body2' color='text.secondary'>
           Collecting data from arXiv, news sources, and more
         </Typography>
       </Box>
@@ -246,10 +258,10 @@ export const Dashboard: React.FC = () => {
     return (
       <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <Box sx={{ p: 3 }}>
-          <Alert 
-            severity="error" 
+          <Alert
+            severity='error'
             action={
-              <Button color="inherit" size="small" onClick={loadData}>
+              <Button color='inherit' size='small' onClick={loadData}>
                 Retry
               </Button>
             }
@@ -265,12 +277,19 @@ export const Dashboard: React.FC = () => {
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <Box sx={{ p: 3, pb: 0 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Typography variant="h4" gutterBottom fontWeight={600} sx={{ mb: 0 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 1,
+          }}
+        >
+          <Typography variant='h4' gutterBottom fontWeight={600} sx={{ mb: 0 }}>
             AI Intelligence Dashboard
           </Typography>
           <Button
-            variant="outlined"
+            variant='outlined'
             onClick={handleRefresh}
             disabled={refreshing}
             startIcon={refreshing ? <CircularProgress size={16} /> : <RefreshIcon />}
@@ -278,7 +297,7 @@ export const Dashboard: React.FC = () => {
             {refreshing ? 'Refreshing...' : 'Refresh'}
           </Button>
         </Box>
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant='body1' color='text.secondary'>
           Stay updated with the latest AI research, news, and developments
         </Typography>
       </Box>
@@ -288,36 +307,36 @@ export const Dashboard: React.FC = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
-              <TrendingIcon color="primary" sx={{ fontSize: 32, mb: 1 }} />
-              <Typography variant="h6">{stats?.totalItems || 0}</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <TrendingIcon color='primary' sx={{ fontSize: 32, mb: 1 }} />
+              <Typography variant='h6'>{stats?.totalItems || 0}</Typography>
+              <Typography variant='body2' color='text.secondary'>
                 Total Items
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
-              <BookmarkIcon color="warning" sx={{ fontSize: 32, mb: 1 }} />
-              <Typography variant="h6">{stats?.bookmarkedCount || 0}</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <BookmarkIcon color='warning' sx={{ fontSize: 32, mb: 1 }} />
+              <Typography variant='h6'>{stats?.bookmarkedCount || 0}</Typography>
+              <Typography variant='body2' color='text.secondary'>
                 Bookmarked
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
-              <ArticleIcon color="success" sx={{ fontSize: 32, mb: 1 }} />
-              <Typography variant="h6">{stats?.byType?.paper || 0}</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <ArticleIcon color='success' sx={{ fontSize: 32, mb: 1 }} />
+              <Typography variant='h6'>{stats?.byType?.paper || 0}</Typography>
+              <Typography variant='body2' color='text.secondary'>
                 Papers
               </Typography>
             </Paper>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Paper sx={{ p: 2, textAlign: 'center' }}>
-              <WebIcon color="error" sx={{ fontSize: 32, mb: 1 }} />
-              <Typography variant="h6">{stats?.byType?.news || 0}</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <WebIcon color='error' sx={{ fontSize: 32, mb: 1 }} />
+              <Typography variant='h6'>{stats?.byType?.news || 0}</Typography>
+              <Typography variant='body2' color='text.secondary'>
                 News
               </Typography>
             </Paper>
@@ -327,23 +346,23 @@ export const Dashboard: React.FC = () => {
 
       {/* Content Tabs */}
       <Box sx={{ px: 3 }}>
-        <Tabs value={activeTab} onChange={handleTabChange} variant="scrollable">
-          <Tab label="All Content" />
-          <Tab label="Papers" />
-          <Tab label="News & Blogs" />
-          <Tab label="Videos" />
-          <Tab label="X.com" />
-          <Tab label="Bookmarked" />
+        <Tabs value={activeTab} onChange={handleTabChange} variant='scrollable'>
+          <Tab label='All Content' />
+          <Tab label='Papers' />
+          <Tab label='News & Blogs' />
+          <Tab label='Videos' />
+          <Tab label='X.com' />
+          <Tab label='Bookmarked' />
         </Tabs>
       </Box>
 
       {/* Content Grid */}
       <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto' }}>
         <Grid container spacing={3}>
-          {filteredItems.map((item) => (
+          {filteredItems.map(item => (
             <Grid item xs={12} md={6} lg={4} key={item.id}>
-              <Card 
-                sx={{ 
+              <Card
+                sx={{
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
@@ -352,9 +371,9 @@ export const Dashboard: React.FC = () => {
                   '&:hover': {
                     transform: 'translateY(-2px)',
                     boxShadow: 4,
-                  }
+                  },
                 }}
-                onClick={(e) => {
+                onClick={e => {
                   // Only open link if clicking on the card itself, not buttons
                   if ((e.target as HTMLElement).closest('button') === null) {
                     openLink(item.url);
@@ -364,7 +383,7 @@ export const Dashboard: React.FC = () => {
                 {/* Thumbnail */}
                 {item.thumbnail && (
                   <Box
-                    component="img"
+                    component='img'
                     sx={{
                       height: 160,
                       width: '100%',
@@ -382,23 +401,23 @@ export const Dashboard: React.FC = () => {
                     <Avatar sx={{ width: 24, height: 24, mr: 1 }}>
                       {getSourceIcon(item.content_type)}
                     </Avatar>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant='caption' color='text.secondary'>
                       {item.source}
                     </Typography>
                     <Box sx={{ flexGrow: 1 }} />
                     <Chip
-                      size="small"
+                      size='small'
                       label={item.importance_score}
                       color={getImportanceColor(item.importance_score)}
-                      variant="outlined"
+                      variant='outlined'
                     />
                   </Box>
 
                   {/* Title */}
-                  <Typography 
-                    variant="h6" 
-                    gutterBottom 
-                    sx={{ 
+                  <Typography
+                    variant='h6'
+                    gutterBottom
+                    sx={{
                       fontSize: '1rem',
                       lineHeight: 1.3,
                       display: '-webkit-box',
@@ -409,7 +428,7 @@ export const Dashboard: React.FC = () => {
                       '&:hover': {
                         color: 'primary.main',
                         textDecoration: 'underline',
-                      }
+                      },
                     }}
                     onClick={() => openLink(item.url)}
                   >
@@ -418,16 +437,16 @@ export const Dashboard: React.FC = () => {
 
                   {/* Authors */}
                   {item.authors && (
-                    <Typography variant="caption" color="text.secondary" gutterBottom>
+                    <Typography variant='caption' color='text.secondary' gutterBottom>
                       By {item.authors}
                     </Typography>
                   )}
 
                   {/* Description/Summary */}
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    sx={{ 
+                  <Typography
+                    variant='body2'
+                    color='text.secondary'
+                    sx={{
                       flexGrow: 1,
                       display: '-webkit-box',
                       WebkitLineClamp: 3,
@@ -441,12 +460,12 @@ export const Dashboard: React.FC = () => {
 
                   {/* Categories */}
                   <Box sx={{ display: 'flex', gap: 0.5, mb: 2, flexWrap: 'wrap' }}>
-                    {item.categories.slice(0, 3).map((category) => (
+                    {item.categories.slice(0, 3).map(category => (
                       <Chip
                         key={category}
-                        size="small"
+                        size='small'
                         label={category}
-                        variant="outlined"
+                        variant='outlined'
                         sx={{ fontSize: '0.7rem', height: 20 }}
                       />
                     ))}
@@ -455,27 +474,29 @@ export const Dashboard: React.FC = () => {
                   <Divider sx={{ mb: 2 }} />
 
                   {/* Actions */}
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
                     <Box>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant='caption' color='text.secondary'>
                         {new Date(item.published).toLocaleDateString()}
                       </Typography>
                     </Box>
-                    
+
                     <Box>
                       <IconButton
-                        size="small"
+                        size='small'
                         onClick={() => toggleBookmark(item.id)}
                         color={item.bookmarked ? 'warning' : 'default'}
                       >
                         {item.bookmarked ? <BookmarkFilledIcon /> : <BookmarkIcon />}
                       </IconButton>
-                      
-                      <IconButton
-                        size="small"
-                        onClick={() => openLink(item.url)}
-                        color="primary"
-                      >
+
+                      <IconButton size='small' onClick={() => openLink(item.url)} color='primary'>
                         <OpenIcon />
                       </IconButton>
                     </Box>
@@ -488,19 +509,18 @@ export const Dashboard: React.FC = () => {
 
         {filteredItems.length === 0 && (
           <Box sx={{ textAlign: 'center', py: 8 }}>
-            <Typography variant="h6" color="text.secondary" gutterBottom>
+            <Typography variant='h6' color='text.secondary' gutterBottom>
               No content found
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {items.length === 0 
+            <Typography variant='body2' color='text.secondary'>
+              {items.length === 0
                 ? "Click 'Refresh' to start collecting AI content from various sources"
-                : "Try adjusting your filters or check a different tab"
-              }
+                : 'Try adjusting your filters or check a different tab'}
             </Typography>
             {items.length === 0 && (
-              <Button 
-                variant="contained" 
-                sx={{ mt: 2 }} 
+              <Button
+                variant='contained'
+                sx={{ mt: 2 }}
                 onClick={handleRefresh}
                 disabled={refreshing}
                 startIcon={refreshing ? <CircularProgress size={16} /> : <RefreshIcon />}

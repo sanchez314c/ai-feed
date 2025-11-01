@@ -126,16 +126,12 @@ const bottomItems: NavItem[] = [
   },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({
-  width,
-  collapsedWidth,
-  isMobile,
-}) => {
+export const Sidebar: React.FC<SidebarProps> = ({ width, collapsedWidth, isMobile }) => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const { sidebarOpen, setSidebarOpen } = useAppStore();
-  
+
   const [expandedItems, setExpandedItems] = React.useState<string[]>(['sources']);
 
   const handleItemClick = (item: NavItem) => {
@@ -150,10 +146,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const toggleExpanded = (itemId: string) => {
-    setExpandedItems((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
+    setExpandedItems(prev =>
+      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
     );
   };
 
@@ -187,36 +181,34 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }}
             >
               {item.badge ? (
-                <Badge badgeContent={item.badge} color="error">
+                <Badge badgeContent={item.badge} color='error'>
                   {item.icon}
                 </Badge>
               ) : (
                 item.icon
               )}
             </ListItemIcon>
-            
+
             {sidebarOpen && (
               <>
-                <ListItemText 
+                <ListItemText
                   primary={item.title}
                   sx={{
                     opacity: sidebarOpen ? 1 : 0,
                     color: isActive ? 'primary.main' : 'inherit',
                   }}
                 />
-                {hasChildren && (
-                  isExpanded ? <ExpandLess /> : <ExpandMore />
-                )}
+                {hasChildren && (isExpanded ? <ExpandLess /> : <ExpandMore />)}
               </>
             )}
           </ListItemButton>
         </ListItem>
-        
+
         {/* Children */}
         {hasChildren && sidebarOpen && (
-          <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {item.children!.map((child) => renderNavItem(child, level + 1))}
+          <Collapse in={isExpanded} timeout='auto' unmountOnExit>
+            <List component='div' disablePadding>
+              {item.children!.map(child => renderNavItem(child, level + 1))}
             </List>
           </Collapse>
         )}
@@ -225,7 +217,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const drawerContent = (
-    <Box sx={{ overflow: 'auto', height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{
+        overflow: 'auto',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* Header */}
       <Box
         sx={{
@@ -238,7 +237,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         {sidebarOpen && (
           <Typography
-            variant="h6"
+            variant='h6'
             sx={{
               fontWeight: 700,
               background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
@@ -256,17 +255,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation */}
       <Box sx={{ flexGrow: 1 }}>
-        <List>
-          {navigationItems.map((item) => renderNavItem(item))}
-        </List>
+        <List>{navigationItems.map(item => renderNavItem(item))}</List>
       </Box>
 
       {/* Bottom Items */}
       <Box>
         <Divider />
-        <List>
-          {bottomItems.map((item) => renderNavItem(item))}
-        </List>
+        <List>{bottomItems.map(item => renderNavItem(item))}</List>
       </Box>
     </Box>
   );
@@ -274,7 +269,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   if (isMobile) {
     return (
       <Drawer
-        variant="temporary"
+        variant='temporary'
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         ModalProps={{
@@ -294,7 +289,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <Drawer
-      variant="permanent"
+      variant='permanent'
       sx={{
         width: sidebarOpen ? width : collapsedWidth,
         flexShrink: 0,

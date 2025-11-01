@@ -27,7 +27,7 @@ export const useWebSocket = () => {
           });
         };
 
-        ws.onmessage = (event) => {
+        ws.onmessage = event => {
           try {
             const message = JSON.parse(event.data);
             handleWebSocketMessage(message);
@@ -39,12 +39,12 @@ export const useWebSocket = () => {
         ws.onclose = () => {
           console.log('WebSocket disconnected');
           wsRef.current = null;
-          
+
           // Attempt to reconnect after 5 seconds
           setTimeout(connectWebSocket, 5000);
         };
 
-        ws.onerror = (error) => {
+        ws.onerror = error => {
           console.error('WebSocket error:', error);
         };
       } catch (error) {
@@ -62,11 +62,11 @@ export const useWebSocket = () => {
             duration: 5000,
           });
           break;
-          
+
         case 'content:updated':
           // Handle content updates
           break;
-          
+
         case 'analysis:completed':
           addNotification({
             type: 'success',
@@ -75,7 +75,7 @@ export const useWebSocket = () => {
             duration: 3000,
           });
           break;
-          
+
         default:
           console.log('Unknown WebSocket message type:', message.type);
       }

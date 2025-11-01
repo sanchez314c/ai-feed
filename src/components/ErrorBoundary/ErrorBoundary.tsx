@@ -24,7 +24,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
-    
+
     this.setState({
       error,
       errorInfo,
@@ -73,13 +73,14 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                 mb: 2,
               }}
             />
-            
-            <Typography variant="h4" gutterBottom color="error">
+
+            <Typography variant='h4' gutterBottom color='error'>
               Something went wrong
             </Typography>
-            
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-              An unexpected error occurred. Please reload the application or contact support if the problem persists.
+
+            <Typography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
+              An unexpected error occurred. Please reload the application or contact support if the
+              problem persists.
             </Typography>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
@@ -94,7 +95,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                   maxHeight: 200,
                 }}
               >
-                <Typography variant="caption" component="pre" sx={{ whiteSpace: 'pre-wrap' }}>
+                <Typography variant='caption' component='pre' sx={{ whiteSpace: 'pre-wrap' }}>
                   {this.state.error.message}
                   {'\n'}
                   {this.state.error.stack}
@@ -103,14 +104,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             )}
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'center' }}>
-              <Button variant="contained" onClick={this.handleReload}>
+              <Button variant='contained' onClick={this.handleReload}>
                 Reload Application
               </Button>
-              
-              <Button 
-                variant="outlined" 
-                onClick={() => this.setState({ hasError: false })}
-              >
+
+              <Button variant='outlined' onClick={() => this.setState({ hasError: false })}>
                 Try Again
               </Button>
             </Box>

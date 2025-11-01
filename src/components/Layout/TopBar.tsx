@@ -28,12 +28,12 @@ interface TopBarProps {
 
 export const TopBar: React.FC<TopBarProps> = ({ sidebarWidth, isMobile }) => {
   const theme = useTheme();
-  const { 
-    toggleSidebar, 
-    toggleTheme, 
-    notifications, 
+  const {
+    toggleSidebar,
+    toggleTheme,
+    notifications,
     theme: appTheme,
-    addNotification
+    addNotification,
   } = useAppStore();
 
   const handleRefresh = () => {
@@ -53,7 +53,7 @@ export const TopBar: React.FC<TopBarProps> = ({ sidebarWidth, isMobile }) => {
 
   return (
     <AppBar
-      position="fixed"
+      position='fixed'
       sx={{
         zIndex: theme.zIndex.drawer + 1,
         ml: isMobile ? 0 : `${sidebarWidth}px`,
@@ -69,18 +69,14 @@ export const TopBar: React.FC<TopBarProps> = ({ sidebarWidth, isMobile }) => {
     >
       <Toolbar sx={{ gap: 2 }}>
         {/* Menu Button */}
-        <IconButton
-          edge="start"
-          onClick={toggleSidebar}
-          sx={{ mr: 1 }}
-        >
+        <IconButton edge='start' onClick={toggleSidebar} sx={{ mr: 1 }}>
           <MenuIcon />
         </IconButton>
 
         {/* Logo/Title */}
         <Typography
-          variant="h6"
-          component="div"
+          variant='h6'
+          component='div'
           sx={{
             fontWeight: 700,
             background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
@@ -101,20 +97,16 @@ export const TopBar: React.FC<TopBarProps> = ({ sidebarWidth, isMobile }) => {
         {/* Action Buttons */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Refresh */}
-          <Tooltip title="Refresh Content">
+          <Tooltip title='Refresh Content'>
             <IconButton onClick={handleRefresh}>
               <RefreshIcon />
             </IconButton>
           </Tooltip>
 
           {/* Notifications */}
-          <Tooltip title="Notifications">
+          <Tooltip title='Notifications'>
             <IconButton onClick={handleNotifications}>
-              <Badge 
-                badgeContent={notifications.length} 
-                color="error"
-                max={99}
-              >
+              <Badge badgeContent={notifications.length} color='error' max={99}>
                 <NotificationsIcon />
               </Badge>
             </IconButton>
