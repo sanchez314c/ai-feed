@@ -244,4 +244,12 @@ coverage/
 # Temporary files
 *.tmp
 *.tempvenv/
+
+# Python virtual environments
+venv/
+ENV/
+env/
+__pycache__/
+
+# Archive
 archive/
